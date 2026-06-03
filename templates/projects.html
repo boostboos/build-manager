@@ -1,0 +1,76 @@
+﻿{% extends "base.html" %}
+{% block title %}项目 - Build Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">项目</h2>
+    <a href="/projects/new" class="btn btn-primary">+ 新建</a>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th style="width:18%">名称</th>
+                    <th style="min-width:280px">项目路径</th>
+                    <th style="width:8%">Dockerfile</th>
+                    <th style="width:14%">最近构建</th>
+                    <th class="text-end" style="width:auto">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in projects %}
+                {% set lb = builds_by_project.get(p.id) %}
+                <tr>
+                    <td><strong>{{ p.name }}</strong></td>
+                    <td style="max-width:0"><code class="path-text" style="display:inline-block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ p.project_root }}</code></td>
+                    <td>{{ p.dockerfile_name }}</td>
+                    <td>
+                        {% if lb %}
+                        <span class="badge bg-{{ 'success' if lb.status == 'success' else 'danger' if lb.status == 'failed' else 'warning' if lb.status == 'running' else 'secondary' }}">{{ lb.status }}</span>
+                        <small class="text-muted ms-1">{{ lb.started_at.strftime('%m-%d %H:%M') }}</small>
+                        {% else %}<span class="badge bg-secondary">无</span>{% endif %}
+                    </td>
+                    <td class="text-end text-nowrap">
+                        <a href="/projects/{{ p.id }}" class="btn btn-sm btn-outline-secondary">详情</a>
+                        <a href="/projects/{{ p.id }}/edit" class="btn btn-sm btn-outline-secondary">编辑</a>
+                        <form action="/projects/{{ p.id }}/build-upload-deploy" method="post" class="d-inline" onsubmit="return confirmBuild(event, {{ p.id }}, '{{ p.name }}')">
+                            <button type="submit" class="btn btn-sm" style="background:#00cec9;border-color:#00cec9;color:#fff">一键构建部署</button>
+                        </form>
+                        <form action="/projects/{{ p.id }}/build" method="post" class="d-inline" onsubmit="return confirmBuild(event, {{ p.id }}, '{{ p.name }}')">
+                            <button class="btn btn-sm btn-success">构建</button>
+                        </form>
+                        <form action="/projects/{{ p.id }}/delete" method="post" class="d-inline" onsubmit="return confirm('确认删除项目「{{ p.name }}」及其所有构建记录？')">
+                            <button class="btn btn-sm btn-outline-danger">删除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+function confirmBuild(ev, projectId, projectName) {
+    ev.preventDefault();
+    var form = ev.target;
+    fetch('/api/projects/' + projectId + '/running')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.running) {
+                if (!confirm('项目「' + projectName + '」已有构建(# ' + data.build_id + ')正在运行。\n是否停止当前构建并重新开始？')) {
+                    return;
+                }
+            } else {
+                if (!confirm('确认构建项目「' + projectName + '」？')) {
+                    return;
+                }
+            }
+            form.submit();
+        });
+    return false;
+}
+</script>
+{% endblock %}

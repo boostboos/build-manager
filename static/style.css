@@ -1,0 +1,152 @@
+﻿body {
+    background: #f5f6fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+    color: #2d3436;
+    font-size: 0.85rem;
+}
+.navbar {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    background: #2d3436 !important;
+    padding: 0.4rem 1rem;
+    min-height: 42px;
+}
+.navbar-brand {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #dfe6e9 !important;
+    letter-spacing: 0.5px;
+}
+.nav-link {
+    font-size: 0.82rem;
+    color: #b2bec3 !important;
+    padding: 0.3rem 0.7rem !important;
+}
+.nav-link:hover { color: #fff !important; }
+
+h2 { font-weight: 700; font-size: 1.2rem; color: #2d3436; }
+h4 { font-weight: 600; font-size: 0.95rem; }
+h5 { font-weight: 600; font-size: 0.85rem; }
+small, .small { font-size: 0.78rem; }
+
+.card {
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    margin-bottom: 0.75rem;
+}
+.card-header {
+    background: #f8f9fa;
+    font-weight: 600;
+    font-size: 0.78rem;
+    color: #636e72;
+    letter-spacing: 0.3px;
+    padding: 0.45rem 0.75rem;
+    border-bottom: 1px solid #eef0f2;
+}
+.card-body { padding: 0.75rem; }
+.card-footer { padding: 0.5rem 0.75rem; }
+
+.stat-card .card-body {
+    padding: 0.5rem 0.75rem;
+    line-height: 1.5;
+}
+.stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #b2bec3;
+    margin-bottom: 0.1rem;
+}
+
+.table { font-size: 0.82rem; margin-bottom: 0; }
+.table th {
+    font-weight: 600;
+    border-top: none;
+    color: #636e72;
+    font-size: 0.72rem;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    padding: 0.45rem 0.65rem;
+}
+.table td { padding: 0.5rem 0.65rem; vertical-align: middle; }
+.table-hover tbody tr:hover { background: #f8f9ff; }
+
+.build-log {
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-size: 11.5px !important;
+    line-height: 1.65;
+    font-family: "Cascadia Code", "Fira Code", "JetBrains Mono", Consolas, monospace;
+}
+
+code, .path-text {
+    font-size: 0.75rem;
+    padding: 1px 4px;
+    background: #f0f0f0;
+    border-radius: 3px;
+    color: #495057;
+}
+
+.badge {
+    font-weight: 500;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+}
+
+.btn {
+    border-radius: 4px;
+    font-weight: 500;
+    font-size: 0.78rem;
+    padding: 0.2rem 0.6rem;
+    transition: all 0.12s;
+}
+.btn-sm { font-size: 0.73rem; padding: 0.15rem 0.5rem; }
+.btn-success { background: #00b894; border-color: #00b894; }
+.btn-success:hover { background: #00a381; border-color: #00a381; }
+.btn-outline-info { color: #0984e3; border-color: #0984e3; }
+.btn-outline-info:hover { background: #0984e3; border-color: #0984e3; color: #fff; }
+.btn-outline-success { color: #00b894; border-color: #00b894; }
+.btn-outline-success:hover { background: #00b894; border-color: #00b894; color: #fff; }
+.btn-outline-primary { color: #0984e3; border-color: #0984e3; }
+.btn-outline-primary:hover { background: #0984e3; border-color: #0984e3; color: #fff; }
+.btn-outline-success:disabled, .btn-outline-primary:disabled { opacity: 0.4; pointer-events: none; }
+.btn-primary { background: #0984e3; border-color: #0984e3; }
+.btn-primary:hover { background: #0770c4; border-color: #0770c4; }
+
+pre { margin: 0; }
+
+.alert {
+    border: none;
+    border-radius: 5px;
+    font-size: 0.82rem;
+    padding: 0.4rem 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.form-control, .form-select {
+    font-size: 0.82rem;
+    border-radius: 4px;
+    border: 1px solid #dfe6e9;
+    padding: 0.3rem 0.5rem;
+}
+.form-control:focus, .form-select:focus {
+    border-color: #0984e3;
+    box-shadow: 0 0 0 0.15rem rgba(9,132,227,0.15);
+}
+.form-label { font-weight: 500; font-size: 0.78rem; color: #636e72; margin-bottom: 0.15rem; }
+.form-check-label { font-size: 0.8rem; }
+
+a { color: #0984e3; }
+a:hover { color: #0770c4; }
+
+.pagination { margin-bottom: 0; }
+.page-link {
+    font-size: 0.78rem;
+    padding: 0.25rem 0.5rem;
+    color: #636e72;
+    border: 1px solid #dfe6e9;
+}
+.page-item.active .page-link { background: #0984e3; border-color: #0984e3; }
+
+.font-monospace { font-size: 0.78rem; }
+.text-muted { color: #b2bec3 !important; }

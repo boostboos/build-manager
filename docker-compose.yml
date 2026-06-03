@@ -1,0 +1,16 @@
+version: "3.9"
+services:
+  build-manager:
+    build: .
+    image: build-manager:latest
+    container_name: build-manager
+    ports:
+      - "5000:5000"
+    volumes:
+      # SQLite 数据库持久化
+      - ./data:/app/data
+      # 挂载项目目录（Windows 路径需调整）
+      # - /e/projects:/projects:ro
+    environment:
+      - TZ=Asia/Shanghai
+    restart: unless-stopped

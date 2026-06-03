@@ -1,0 +1,92 @@
+﻿{% extends "base.html" %}
+{% block title %}构建记录 - Build Manager{% endblock %}
+{% block content %}
+<h2 class="mb-3">构建记录</h2>
+<div class="card">
+    <div class="card-body p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr><th>#</th><th>项目</th><th>状态</th><th>镜像标签</th><th>开始时间</th><th>耗时</th><th>上传/部署</th><th class="text-end">操作</th></tr>
+            </thead>
+            <tbody>
+                {% for b in builds %}
+                <tr>
+                    <td class="text-muted">{{ b.id }}</td>
+                    <td><a href="/projects/{{ b.project_id }}">{{ b.project_name }}</a></td>
+                    <td>{% include "_build_badge.html" %}</td>
+                    <td><small class="font-monospace">{{ b.image_tag }}</small></td>
+                    <td><small class="text-muted">{{ b.started_at.strftime('%m-%d %H:%M:%S') }}</small></td>
+                    <td>{% if b.duration_seconds %}<small>{{ (b.duration_seconds // 60) }}分{{ b.duration_seconds % 60 }}秒</small>{% else %}<small>-</small>{% endif %}</td>
+                    <td>{% include "_upload_badge.html" %}</td>
+                    <td class="text-end text-nowrap">
+                        <a href="/builds/{{ b.id }}" class="btn btn-sm btn-outline-info">日志</a>
+                        {% if b.status == 'success' and b.output_file %}
+                        <button class="btn btn-sm btn-outline-success upload-btn" data-bid="{{ b.id }}" {{ 'disabled' if b.upload_status in ('uploading','deploying') }}>上传</button>
+                        <button class="btn btn-sm btn-outline-primary deploy-btn" data-bid="{{ b.id }}" {{ 'disabled' if b.upload_status not in ('upload_success','deploy_success','deploy_failed') }}>部署</button>
+                        {% endif %}
+                        <form action="/builds/{{ b.id }}/delete" method="post" class="d-inline" id="del-form-{{ b.id }}">
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="handleDelete({{ b.id }}, '{{ b.image_tag }}')">删除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if pagination and pagination.pages > 1 %}
+<nav class="mt-2">
+    <ul class="pagination pagination-sm mb-0">
+        {% if pagination.has_prev %}<li class="page-item"><a class="page-link" href="?page={{ pagination.prev_num }}">上一页</a></li>{% endif %}
+        {% for p in pagination.iter_pages() %}
+            {% if p %}<li class="page-item {{ 'active' if p == pagination.page }}"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>{% endif %}
+        {% endfor %}
+        {% if pagination.has_next %}<li class="page-item"><a class="page-link" href="?page={{ pagination.next_num }}">下一页</a></li>{% endif %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+function handleUpload(bid) {
+    if (!confirm('确认上传该镜像到 Portainer？')) return;
+    var btn = document.querySelector('.upload-btn[data-bid="' + bid + '"]');
+    if (btn) btn.disabled = true;
+    fetch('/api/builds/' + bid + '/upload', { method: 'POST' })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error) { alert('上传失败: ' + data.error); if (btn) btn.disabled = false; }
+            else { alert('上传任务已提交，请刷新页面查看状态'); location.reload(); }
+        })
+        .catch(function(e) { alert('请求失败: ' + e); if (btn) btn.disabled = false; });
+}
+function handleDeploy(bid) {
+    if (!confirm('确认部署该镜像？')) return;
+    var btn = document.querySelector('.deploy-btn[data-bid="' + bid + '"]');
+    if (btn) btn.disabled = true;
+    fetch('/api/builds/' + bid + '/deploy', { method: 'POST' })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.error) { alert('部署失败: ' + data.error); if (btn) btn.disabled = false; }
+            else { alert('部署任务已提交，请刷新页面查看状态'); location.reload(); }
+        })
+        .catch(function(e) { alert('请求失败: ' + e); if (btn) btn.disabled = false; });
+}
+function handleDelete(bid) {
+    if (!confirm('确认删除构建记录 #' + bid + '？')) return;
+    if (confirm('是否同时删除本地 Docker 镜像？')) {
+        fetch('/api/builds/' + bid + '/delete-image', { method: 'POST' })
+            .then(function() { document.getElementById('del-form-' + bid).submit(); })
+            .catch(function() { document.getElementById('del-form-' + bid).submit(); });
+    } else {
+        document.getElementById('del-form-' + bid).submit();
+    }
+}
+document.querySelectorAll('.upload-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { handleUpload(this.dataset.bid); });
+});
+document.querySelectorAll('.deploy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { handleDeploy(this.dataset.bid); });
+});
+</script>
+{% endblock %}

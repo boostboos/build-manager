@@ -1,0 +1,6 @@
+{% if b.status == 'running' %}<span class="badge bg-warning">运行中</span>
+{% elif b.status == 'success' %}<span class="badge bg-success">成功</span>
+{% elif b.status == 'failed' %}<span class="badge bg-danger">失败</span>
+{% elif b.status == 'stopped' %}<span class="badge bg-secondary">已停止</span>
+{% elif b.status == 'timeout' %}<span class="badge bg-secondary">超时</span>
+{% else %}<span class="badge bg-secondary">{{ b.status }}</span>{% endif %}

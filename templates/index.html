@@ -1,0 +1,52 @@
+﻿{% extends "base.html" %}
+{% block title %}仪表盘 - Build Manager{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">仪表盘</h2>
+    <a href="/projects/new" class="btn btn-primary">+ 新建项目</a>
+</div>
+
+{% if projects %}
+<div class="row g-3">
+    {% for p in projects %}
+    {% set lb = latest_builds.get(p.id) %}
+    <div class="col-md-4">
+        <div class="card project-card h-100">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title mb-0">{{ p.name }}</h5>
+                    {% if lb %}
+                    <span class="badge bg-{{ 'success' if lb.status == 'success' else 'danger' if lb.status == 'failed' else 'warning' if lb.status == 'running' else 'secondary' }} status-badge">{{ lb.status }}</span>
+                    {% else %}
+                    <span class="badge bg-secondary status-badge">未构建</span>
+                    {% endif %}
+                </div>
+                {% if p.description %}
+                <p class="text-muted small mb-2">{{ p.description[:80] }}{% if p.description|length > 80 %}...{% endif %}</p>
+                {% endif %}
+                <div class="small text-muted mb-2">
+                    <code class="path-text">{{ p.project_root[:50] }}{{ '...' if p.project_root|length > 50 }}</code>
+                </div>
+                {% if lb %}
+                <div class="small text-muted">
+                    <span>最近: {{ lb.started_at.strftime('%m-%d %H:%M') }}</span>
+                    {% if lb.duration_seconds %}
+                    <span class="ms-2">{{ (lb.duration_seconds // 60) }}分{{ lb.duration_seconds % 60 }}秒</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            <div class="card-footer bg-transparent border-top d-flex gap-2">
+                <a href="/projects/{{ p.id }}" class="btn btn-sm btn-outline-secondary flex-fill">详情</a>
+                <form action="/projects/{{ p.id }}/build" method="post" class="flex-fill" onsubmit="return confirm('确认构建项目「{{ p.name }}」？')">
+                    <button type="submit" class="btn btn-sm btn-success w-100">构建</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert alert-info">暂无项目，请先 <a href="/projects/new">创建项目</a></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,7 @@
+{% if b.upload_status == 'uploading' %}<span class="badge bg-info">上传中{% if b.is_chain %}（一键）{% endif %}</span>
+{% elif b.upload_status == 'upload_success' %}<span class="badge bg-success">{% if b.is_chain %}一键{% endif %}上传成功</span>
+{% elif b.upload_status == 'upload_failed' %}<span class="badge bg-danger">{% if b.is_chain %}一键{% endif %}上传失败</span>
+{% elif b.upload_status == 'deploying' %}<span class="badge bg-info">部署中{% if b.is_chain %}（一键）{% endif %}</span>
+{% elif b.upload_status == 'deploy_success' %}<span class="badge bg-success" style="background:#6c5ce7 !important;border-color:#6c5ce7 !important">{% if b.is_chain %}一键 {% endif %}部署成功</span>
+{% elif b.upload_status == 'deploy_failed' %}<span class="badge bg-danger">{% if b.is_chain %}一键{% endif %}部署失败</span>
+{% else %}<span class="badge bg-light text-muted">未上传</span>{% endif %}
